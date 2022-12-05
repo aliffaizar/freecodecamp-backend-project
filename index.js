@@ -2,6 +2,7 @@ const express = require("express");
 const cors = require("cors");
 const timestampRoute = require("./src/timestamp");
 const shortenerRoute = require("./src/shortener");
+const uploadRoute = require("./src/upload");
 
 const PORT = process.env.PORT || 5000;
 
@@ -13,6 +14,7 @@ app.use(
     extended: true,
   })
 );
+app.use(express.json());
 app.use(express.static("public"));
 
 app.get("/timestamp", (req, res) => {
@@ -27,6 +29,10 @@ app.get("/shortener", (req, res) => {
   res.sendFile(__dirname + "/views/shortener.html");
 });
 
+app.get("/upload", (req, res) => {
+  res.sendFile(__dirname + "/views/upload.html");
+});
+
 app.use("/api/timestamp", timestampRoute);
 app.get("/api/whoami", (req, res) => {
   res.json({
@@ -35,8 +41,8 @@ app.get("/api/whoami", (req, res) => {
     software: req.headers["user-agent"],
   });
 });
-
 app.use("/api/shortener", shortenerRoute);
+app.use("/api/upload", uploadRoute);
 
 app.listen(PORT, () => {
   console.log(`app runing at port ${PORT}`);
