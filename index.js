@@ -1,12 +1,20 @@
 const express = require("express");
 const cors = require("cors");
-const timestampRoute = require("./src/timestamp");
-const shortenerRoute = require("./src/shortener");
-const uploadRoute = require("./src/upload");
+const mongoose = require("mongoose");
+const timestampRoute = require("./route/timestamp");
+const shortenerRoute = require("./route/shortener");
+const uploadRoute = require("./route/upload");
+
+require("dotenv").config();
 
 const PORT = process.env.PORT || 5000;
 
 const app = express();
+
+mongoose.connect(process.env.MONGODB, {
+  useNewUrlParser: true,
+  useUnifiedTopology: true,
+});
 
 app.use(cors({ optionsSuccessStatus: 200 }));
 app.use(
@@ -43,6 +51,12 @@ app.get("/api/whoami", (req, res) => {
 });
 app.use("/api/shortener", shortenerRoute);
 app.use("/api/upload", uploadRoute);
+
+app.use("/exercise", (req, res) => {
+  res.sendFile(__dirname + "/views/exercise.html");
+});
+
+app.use("/api/users", require("./route/exercise"));
 
 app.listen(PORT, () => {
   console.log(`app runing at port ${PORT}`);
